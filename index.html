@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Evidencija</title>
+
+    <style>
+        table, td, th {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        #inputDiv{
+            display: inline-block;
+        }
+
+        #history{
+            display: inline-block;
+            position: absolute;
+            padding-left: 50px;
+        }
+
+    </style>
+
+    <script>
+        function addStudent(){
+
+
+            var tableRef = document.getElementById("tableGrades").getElementsByTagName("tbody")[0];
+
+            var name = document.getElementById("name");
+            var index = document.getElementById("index");
+            var phone = document.getElementById("phone").value;
+            var gradeInput = document.getElementsByClassName("ocenka");
+
+
+            var grade = "";
+            for(var i = 0; i< gradeInput.length; i++){
+                if (gradeInput[i].checked){
+                    grade = gradeInput[i].value;
+                }
+            }
+
+            var sesija = document.getElementById("session");
+
+            if (name.value == "" || index.value == "" || phone == "" || grade=="" || sesija.value == ""){
+                alert("All values are not entered!!!");
+                return;
+            }
+
+            var newRow = tableRef.insertRow(tableRef.rows.length);
+
+            var cellName = newRow.insertCell();
+            var cellIndex = newRow.insertCell();
+            var cellPhone = newRow.insertCell();
+            var cellGrade = newRow.insertCell();
+            cellGrade.setAttribute('class','grades')
+            var cellSession = newRow.insertCell();
+            var cellActions = newRow.insertCell();
+
+            cellName.innerHTML = name.value;
+            cellIndex.innerHTML = index.value;
+
+            var formatPhone = phone.charAt(0) + phone.charAt(1) + phone.charAt(2) + "/" + phone.charAt(3) + phone.charAt(4) + phone.charAt(5) + "-" + phone.charAt(6) + phone.charAt(7) + phone.charAt(8);
+            cellPhone.innerHTML = formatPhone;
+
+            cellGrade.innerHTML = grade;
+
+            cellSession.innerHTML = sesija.value;
+
+            cellActions.innerHTML = "<button onclick='confirm(this)'>Confirm</button> <button onclick='revert(this)'>Revert</button>"
+
+             //name.value = '';
+             //index.value = '';
+             //phone = '';
+            sumAverage();
+
+        }
+
+        function confirm(b) {
+            var tr = b.parentNode.parentNode;
+            tr.style.background = "lightgreen";
+            b.disabled = true;
+            b.parentNode.lastChild.disabled = true;
+
+        }
+
+        function revert(b) {
+            var tr = b.parentNode.parentNode;
+            var text = tr.childNodes[1].innerHTML + " - grades " + tr.childNodes[3].innerHTML;
+            var ul = document.getElementById("lista");
+
+            var li = document.createElement("li");
+            li.innerHTML = text;
+            ul.appendChild(li);
+            tr.parentNode.removeChild(tr);
+            sumAverage();
+        }
+
+        function sumAverage(){
+            var gradeCells = document.getElementsByClassName('grades');
+            var sum = 0.0;
+            for(var i=0; i<gradeCells.length; i++){
+                sum += parseInt(gradeCells[i].innerHTML);
+            }
+
+            document.getElementById("average").innerHTML = sum / gradeCells.length;
+        }
+    </script>
+
+</head>
+<body>
+
+<h2>Details</h2>
+
+<div id="inputDiv">
+<label>Name </label> <input type="text" id="name"/> <br/><br/>
+<label>Index </label> <input type="text" id="index"/> <br/><br/>
+<label>Phone </label> <input type="text" id="phone"/> <br/><br/>
+<label>Grade</label>
+    <input type="radio" name="grade" value="5" class="ocenka"/>5
+    <input type="radio" name="grade" value="6" class="ocenka"/>6
+    <input type="radio" name="grade" value="7" class="ocenka"/>7
+    <input type="radio" name="grade" value="8" class="ocenka"/>8
+    <input type="radio" name="grade" value="9" class="ocenka"/>9
+    <input type="radio" name="grade" value="10" class="ocenka"/>10
+<br/><br/>
+<label>Session</label> <select id="session">
+    <option value="January">January</option>
+    <option value="June">June</option>
+    <option value="September">September</option>
+</select>
+
+</div>
+
+<div id="history">
+    <h3>Revert history</h3>
+    <ul id="lista">
+
+    </ul>
+</div>
+
+<br/><br/>
+<button onclick="addStudent()">Import student</button>
+
+<br/>
+<br/>
+
+<h2>Students (average grade: <span id="average"> </span> )</h2>
+
+<table id="tableGrades">
+    <thead>
+        <th>Name</th>
+        <th>Index</th>
+        <th>Phone</th>
+        <th>Grade</th>
+        <th>Session</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+
+    </tbody>
+
+</table>
+
+
+</body>
+</html>
